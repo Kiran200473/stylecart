@@ -473,7 +473,7 @@ public String deleteProduct(@PathVariable Long id,
 @GetMapping("/load-products")
 public String loadProducts() {
 
-    if (productRepository.count() == 0) {
+    if (productRepository.count() <= 40) {
 
         Product p1 = new Product();
         p1.setName("Shirt");
@@ -836,13 +836,13 @@ p40.setDescription("laptop backpack office bags for women with laptop compartmen
 p40.setImageUrl("/images/bag.jpg");
 
 Product p41 = new Product();
-p41.setName("Your Product Name");
+p41.setName("Men Casual Shirt");
 p41.setPrice(2999);
 p41.setCategory("Men Fashion");
 p41.setRating(8.5);
 p41.setDiscount(20);
-p41.setDescription("Your product description");
-p41.setImageUrl("/images/p41.jpg");            
+p41.setDescription("Comfortable casual shirt for men");
+p41.setImageUrl("https://images.unsplash.com/photo-1529139574466-a303027c1d8b");            
 
         productRepository.save(p1);
         productRepository.save(p2);
