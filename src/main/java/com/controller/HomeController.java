@@ -473,7 +473,7 @@ public String deleteProduct(@PathVariable Long id,
 @GetMapping("/load-products")
 public String loadProducts() {
 
-    if (productRepository.count() <= 40) {
+    productRepository.deleteAll(); 
 
         Product p1 = new Product();
         p1.setName("Shirt");
@@ -834,15 +834,7 @@ p40.setRating(7.9);
 p40.setDiscount(21);
 p40.setDescription("laptop backpack office bags for women with laptop compartment");
 p40.setImageUrl("/images/bag.jpg");
-
-Product p41 = new Product();
-p41.setName("Men Casual Shirt");
-p41.setPrice(2999);
-p41.setCategory("Men Fashion");
-p41.setRating(8.5);
-p41.setDiscount(20);
-p41.setDescription("Comfortable casual shirt for men");
-p41.setImageUrl("https://images.unsplash.com/photo-1529139574466-a303027c1d8b");            
+        
 
         productRepository.save(p1);
         productRepository.save(p2);
@@ -883,10 +875,9 @@ productRepository.save(p36);
 productRepository.save(p37);
 productRepository.save(p38);
 productRepository.save(p39);
-productRepository.save(p40);
-productRepository.save(p41);            
+productRepository.save(p40);           
 
-    }
+    
 
     return "redirect:/products";
 }
