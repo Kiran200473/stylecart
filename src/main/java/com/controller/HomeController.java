@@ -835,6 +835,15 @@ p40.setDiscount(21);
 p40.setDescription("laptop backpack office bags for women with laptop compartment");
 p40.setImageUrl("/images/bag.jpg");
 
+Product p41 = new Product();
+p41.setName("Your Product Name");
+p41.setPrice(2999);
+p41.setCategory("Men Fashion");
+p41.setRating(8.5);
+p41.setDiscount(20);
+p41.setDescription("Your product description");
+p41.setImageUrl("/images/p41.jpg");            
+
         productRepository.save(p1);
         productRepository.save(p2);
         productRepository.save(p3);
@@ -875,6 +884,7 @@ productRepository.save(p37);
 productRepository.save(p38);
 productRepository.save(p39);
 productRepository.save(p40);
+productRepository.save(p41);            
 
     }
 
