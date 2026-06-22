@@ -236,7 +236,14 @@ public String removeWishlist(@PathVariable Long id) {
 }
 
 @GetMapping("/wishlist-to-cart/{id}")
-public String wishlistToCart(@PathVariable Long id) {
+public String wishlistToCart(@PathVariable Long id,
+                             HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
+
+    String customerName =
+            (String) session.getAttribute("customerName");
 
     Wishlist item =
             wishlistRepository.findById(id).orElse(null);
@@ -250,12 +257,15 @@ public String wishlistToCart(@PathVariable Long id) {
         cart.setImageUrl(item.getImageUrl());
         cart.setQuantity(1);
 
+        cart.setUserId(userId);
+        cart.setCustomerName(customerName);
+
         cartItemRepository.save(cart);
 
         wishlistRepository.deleteById(id);
     }
 
-    return "redirect:/wishlist";
+    return "redirect:/cart";
 }
 
 @GetMapping("/cart")
