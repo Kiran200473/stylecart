@@ -69,8 +69,11 @@ public String loginUser(@RequestParam("email") String email,
             user.getPassword().equals(password)) {
 
         session.setAttribute("admin", false);
+session.setAttribute("userId", user.getId());
+session.setAttribute("customerName", user.getName());
+session.setAttribute("userEmail", user.getEmail());
 
-        return "redirect:/home";
+return "redirect:/home";
     }
 
     return "redirect:/";
@@ -138,7 +141,14 @@ public String productDetails(@PathVariable Long id,
 }
 
 @GetMapping("/add-cart/{id}")
-public String addToCart(@PathVariable Long id) {
+public String addToCart(@PathVariable Long id,
+                        HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
+
+    String customerName =
+            (String) session.getAttribute("customerName");
 
     Product product =
             productRepository.findById(id).orElse(null);
@@ -146,7 +156,7 @@ public String addToCart(@PathVariable Long id) {
     if (product != null) {
 
         List<CartItem> cartItems =
-                cartItemRepository.findAll();
+                cartItemRepository.findByUserId(userId);
 
         CartItem existingItem = null;
 
@@ -175,6 +185,9 @@ public String addToCart(@PathVariable Long id) {
             item.setPrice(product.getPrice());
             item.setImageUrl(product.getImageUrl());
             item.setQuantity(1);
+
+            item.setUserId(userId);
+            item.setCustomerName(customerName);
 
             cartItemRepository.save(item);
         }
@@ -246,16 +259,20 @@ public String wishlistToCart(@PathVariable Long id) {
 }
 
 @GetMapping("/cart")
-public String cartPage(Model model) {
+public String cartPage(Model model,
+                       HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
 
     List<CartItem> cartItems =
-            cartItemRepository.findAll();
+            cartItemRepository.findByUserId(userId);
 
     double total =
-        cartItems.stream()
-                .mapToDouble(item ->
-                        item.getPrice() * item.getQuantity())
-                .sum();
+            cartItems.stream()
+                    .mapToDouble(item ->
+                            item.getPrice() * item.getQuantity())
+                    .sum();
 
     model.addAttribute("cartItems", cartItems);
     model.addAttribute("total", total);
@@ -311,58 +328,71 @@ public String decreaseQuantity(@PathVariable Long id) {
 }
 
 @GetMapping("/checkout")
-public String checkoutPage(Model model) {
+public String checkoutPage(Model model,
+                           HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
 
     List<CartItem> cartItems =
-            cartItemRepository.findAll();
+            cartItemRepository.findByUserId(userId);
 
     double total =
-        cartItems.stream()
-                .mapToDouble(item ->
-                        item.getPrice() * item.getQuantity())
-                .sum();
+            cartItems.stream()
+                    .mapToDouble(item ->
+                            item.getPrice() * item.getQuantity())
+                    .sum();
+
     model.addAttribute("total", total);
 
     return "checkout";
 }
 
 @GetMapping("/success")
-public String successPage() {
+public String successPage(HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
+
+    String customerName =
+            (String) session.getAttribute("customerName");
 
     List<CartItem> cartItems =
-            cartItemRepository.findAll();
+            cartItemRepository.findByUserId(userId);
 
     for (CartItem item : cartItems) {
 
         OrderHistory order =
                 new OrderHistory();
 
-        order.setProductName(
-                item.getProductName());
+        order.setProductName(item.getProductName());
+        order.setImageUrl(item.getImageUrl());
+        order.setPrice(item.getPrice());
+        order.setQuantity(item.getQuantity());
 
-        order.setImageUrl(
-                item.getImageUrl());
-
-        order.setPrice(
-                item.getPrice());
-
-        order.setQuantity(
-                item.getQuantity());
+        order.setUserId(userId);
+        order.setCustomerName(customerName);
 
         orderHistoryRepository.save(order);
     }
 
-    cartItemRepository.deleteAll();
+    for (CartItem item : cartItems) {
+        cartItemRepository.delete(item);
+    }
 
     return "success";
 }
 
 @GetMapping("/order-history")
-public String orderHistoryPage(Model model) {
+public String orderHistoryPage(Model model,
+                               HttpSession session) {
+
+    Long userId =
+            (Long) session.getAttribute("userId");
 
     model.addAttribute(
             "orders",
-            orderHistoryRepository.findAll());
+            orderHistoryRepository.findByUserId(userId));
 
     return "order-history";
 }

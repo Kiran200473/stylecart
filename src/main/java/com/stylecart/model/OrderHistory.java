@@ -20,6 +20,10 @@ public class OrderHistory {
 
     private int quantity;
 
+    private Long userId;
+
+    private String customerName;
+
     public OrderHistory() {
     }
 
@@ -27,13 +31,17 @@ public class OrderHistory {
                         String productName,
                         String imageUrl,
                         double price,
-                        int quantity) {
+                        int quantity,
+                        Long userId,
+                        String customerName) {
 
         this.id = id;
         this.productName = productName;
         this.imageUrl = imageUrl;
         this.price = price;
         this.quantity = quantity;
+        this.userId = userId;
+        this.customerName = customerName;
     }
 
     public Long getId() {
@@ -75,4 +83,20 @@ public class OrderHistory {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Long getUserId() {
+    return userId;
+}
+
+public void setUserId(Long userId) {
+    this.userId = userId;
+}
+
+public String getCustomerName() {
+    return customerName;
+}
+
+public void setCustomerName(String customerName) {
+    this.customerName = customerName;
+}
 }
