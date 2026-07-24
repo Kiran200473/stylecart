@@ -1,7 +1,7 @@
 services:
   - type: web
     name: stylecart
-    runtime: java
+    env: java
     plan: free
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
